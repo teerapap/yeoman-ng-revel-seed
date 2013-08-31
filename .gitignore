@@ -1,5 +1,11 @@
+## client-side files
 node_modules
 dist
 .tmp
 .sass-cache
 app/bower_components
+
+## revel files
+test-results/
+tmp/
+routes/
