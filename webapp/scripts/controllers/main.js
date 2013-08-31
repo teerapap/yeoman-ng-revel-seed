@@ -5,6 +5,7 @@ angular.module('yeomanNgRevelSeedApp')
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
-      'Karma'
+      'Karma',
+      'Revel'
     ];
   });

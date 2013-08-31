@@ -4,13 +4,12 @@
 
 module:testrunner
 
-GET     /                                       App.Index
+GET     /                                       Static.Serve("webapp","index.html")
 
-# Ignore favicon requests
-GET     /favicon.ico                            404
+GET     /revel-index                            App.Index
 
-# Map static resources from the /app/public folder to the /public path
-GET     /public/*filepath                       Static.Serve("public")
+# Map static resources from the /webapp folder to the / path
+GET     /*filepath                              Static.Serve("webapp")
 
 # Catch all
 *       /:controller/:action                    :controller.:action

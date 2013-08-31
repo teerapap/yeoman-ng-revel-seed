@@ -1,10 +1,6 @@
 // Generated on 2013-08-31 using generator-angular 0.4.0
 'use strict';
 var LIVERELOAD_PORT = 35729;
-var lrSnippet = require('connect-livereload')({ port: LIVERELOAD_PORT });
-var mountFolder = function (connect, dir) {
-  return connect.static(require('path').resolve(dir));
-};
 
 // # Globbing
 // for performance reasons we're only matching one level down:
@@ -18,9 +14,16 @@ module.exports = function (grunt) {
 
   // configurable paths
   var yeomanConfig = {
-    app: 'app',
+    app: 'webapp',
     dist: 'dist'
   };
+
+  // revel configurations
+  var revelConfig = {
+    importpath: 'github.com/teerapap/yeoman-ng-revel-seed',
+    app: "app",
+    port: 9000
+  }
 
   try {
     yeomanConfig.app = require('./bower.json').appPath || yeomanConfig.app;
@@ -28,6 +31,7 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     yeoman: yeomanConfig,
+    revel: revelConfig,
     watch: {
       coffee: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
@@ -64,46 +68,9 @@ module.exports = function (grunt) {
         }]
       }
     },
-    connect: {
-      options: {
-        port: 9000,
-        // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost'
-      },
-      livereload: {
-        options: {
-          middleware: function (connect) {
-            return [
-              lrSnippet,
-              mountFolder(connect, '.tmp'),
-              mountFolder(connect, yeomanConfig.app)
-            ];
-          }
-        }
-      },
-      test: {
-        options: {
-          middleware: function (connect) {
-            return [
-              mountFolder(connect, '.tmp'),
-              mountFolder(connect, 'test')
-            ];
-          }
-        }
-      },
-      dist: {
-        options: {
-          middleware: function (connect) {
-            return [
-              mountFolder(connect, yeomanConfig.dist)
-            ];
-          }
-        }
-      }
-    },
     open: {
       server: {
-        url: 'http://localhost:<%= connect.options.port %>'
+        url: 'http://localhost:<%= revel.port %>'
       }
     },
     clean: {
@@ -316,6 +283,26 @@ module.exports = function (grunt) {
     }
   });
 
+  grunt.registerTask('revel', function(target) {
+    var revelProcess = grunt.util.spawn({
+        cmd: 'revel',
+        args: ['run',revelConfig.importpath,'dev',revelConfig.port],
+        opts: {
+          stdio:'inherit'
+        }
+      },
+      function(error, result, code) {
+        grunt.log.error(String(result));
+        grunt.fail.fatal('revel exited with code: '+code, 3);
+      }
+    );
+    process.on('exit', function() {
+      grunt.log.writeln('killing revel...');
+      revelProcess.kill();
+      grunt.log.writeln('killed revel');
+    });
+  });
+
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {
       return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
@@ -325,7 +312,7 @@ module.exports = function (grunt) {
       'clean:server',
       'concurrent:server',
       'autoprefixer',
-      'connect:livereload',
+      'revel',
       'open',
       'watch'
     ]);
@@ -335,7 +322,7 @@ module.exports = function (grunt) {
     'clean:server',
     'concurrent:test',
     'autoprefixer',
-    'connect:test',
+    'revel',
     'karma'
   ]);
 
