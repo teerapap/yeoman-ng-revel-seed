@@ -6,6 +6,5 @@ dist
 webapp/bower_components
 
 ## revel files
-test-results/
-tmp/
-routes/
+app/tmp/
+app/routes/
