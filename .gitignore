@@ -3,7 +3,7 @@ node_modules
 dist
 .tmp
 .sass-cache
-app/bower_components
+webapp/bower_components
 
 ## revel files
 test-results/
