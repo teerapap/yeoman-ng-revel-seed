@@ -1,3 +1,11 @@
+# :rotating_light: Warning
+
+This repository is DEPRECATED and no longer maintained.
+
+Thank you for all your contributions
+
+---
+
 yeoman-ng-revel-seed
 ====================
 
